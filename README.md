@@ -1,6 +1,11 @@
 # gtRPC
 project 3 of GT course CS6210 ---- RPC-Based Proxy Server
 
+##work progress
+###Xiong Ding: 
+1. test the thrift "hello word" program
+2. next : to write the proxy server/client program
+
 ##Useful links
 
 http://wiki.apache.org/thrift/ThriftUsageC%2B%2B
@@ -8,6 +13,9 @@ http://wiki.apache.org/thrift/ThriftUsageC%2B%2B
 http://www.thrift.pl/Thrift-tutorial-how-it-works.html
 
 http://thrift-tutorial.readthedocs.org/en/latest/usage-example.html
+
+###libcurl tutorial
+http://curl.haxx.se/libcurl/c/libcurl-tutorial.html
 
 build thrift from source file (linux)
 ====================
