@@ -1,0 +1,8 @@
+*.com
+*.dll
+*.exe
+*.o
+*.so
+*~
+*.out
+*.log
