@@ -43,6 +43,11 @@ size_t write_data(void *buffer, size_t size,
   return size * nmemb;
 }
 
+//Cache entry Structure
+typedef struct {
+  std::string data;
+  int timeStamp;
+} cacheEntry;
 
 
 
@@ -51,39 +56,57 @@ size_t write_data(void *buffer, size_t size,
 /////////////////////////////////////////////////////////////////////
 class ProxyServerHandler : virtual public ProxyServerIf {
  public:
+  
+  /* member variables */
+  std::unordered_map<std::string, cacheEntry> cacheHash;
+
+  /* constructor */
   ProxyServerHandler() {
     // Your initialization goes here
   }
 
+  /*  member functions */
   void getPage(std::string& _return, const std::string& url) {
     
-    CURL *curl;
-    CURLcode res;
-    struct wd_in wdi;
+    std::unordered_map<std::string, cacheEntry>::const_iterator
+      got = cacheHash.find (url);
     
-    memset(&wdi, 0, sizeof(wdi));
-    curl = curl_easy_init();
+    if ( got != mymap.end() ){ // found
+      cacheHit(cacheHash); // function to hand the case when cache hit
+      _return = (got -> second).data; 
+    }
+    else { // not found    
+      CURL *curl;
+      CURLcode res;
+      struct wd_in wdi;
     
-    if(NULL != curl) {
-      wdi.size = 1024;
-      wdi.data = (char*)malloc(wdi.size);
-      curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-      curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
-      curl_easy_setopt(curl, CURLOPT_WRITEDATA, &wdi);
-      res = curl_easy_perform(curl);
+      memset(&wdi, 0, sizeof(wdi));
+      curl = curl_easy_init();
+    
+      if(NULL != curl) {
+	wdi.size = 1024;
+	wdi.data = (char*)malloc(wdi.size);
+	curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
+	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &wdi);
+	res = curl_easy_perform(curl);
 
-      /* Check the return value. */
-      if(res != CURLE_OK) _return = std::string("error");
-      else _return = std::string(wdi.data, wdi.len);
+	/* Check the return value. */
+	if(res != CURLE_OK) _return = std::string("error");
+	else {
+	  _return = std::string(wdi.data, wdi.len);
+	  cacheMiss(cacheHash); // handle the cache miss case
+	}
       
-      curl_easy_cleanup(curl);
-    }
-    else {
-      fprintf(stderr, "Error: could not get CURL handle.\n");
-      exit(EXIT_FAILURE);
-    }
+	curl_easy_cleanup(curl);
+      }
+      else {
+	fprintf(stderr, "Error: could not get CURL handle.\n");
+	exit(EXIT_FAILURE);
+      }
 
-    free(wdi.data);
+      free(wdi.data);
+    }
   }
 
 };
