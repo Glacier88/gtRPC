@@ -36,9 +36,9 @@ class Cache {
 
   /* insert the new node after the head of the list */
   void attach(Node *node){
-    node->prev = head;
-    node->next = head->next;
-    head->next = node;
+    node->prev = head; 
+    node->next = head->next; 
+    head->next = node; 
     node->next->prev = node;
   }
   
@@ -67,7 +67,9 @@ class Cache {
     if (got != table.end() ){ // found in cache
       detach(got->second);
       attach(got->second);
-      wp = got->second->wp;
+      printf("%zd\n", (got->second->wp).len);
+      std::cout << &(got->second->wp) << std::endl;
+      wp = got->second->wp; 
       return true;
       }
     else{ // not found
@@ -78,12 +80,12 @@ class Cache {
   /* insert new hash entry */
   void put(const std::string &url, webpage &wp){
     Node *newnode = new Node;
-    newnode->url = url;
-    newnode->wp = wp;
+    newnode->url = url; 
+    newnode->wp = wp;  std::cout << &(newnode->wp) << std::endl;
     table.emplace(url, newnode);
-    attach(newnode);
+    attach(newnode); 
     totalSize += wp.len;
-    numEntry++;
+    numEntry++; 
     while(totalSize > MaxSize){
       Node *old = tail->prev;
       totalSize -= (old->wp).len;

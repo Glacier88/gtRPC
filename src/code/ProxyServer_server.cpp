@@ -8,6 +8,9 @@
 #include <thrift/transport/TBufferTransports.h>
 #include <curl/curl.h>
 #include "cache.h"
+#include <iostream>
+#include <cstdio>
+
 using namespace ::apache::thrift;
 using namespace ::apache::thrift::protocol;
 using namespace ::apache::thrift::transport;
@@ -69,15 +72,13 @@ class ProxyServerHandler : virtual public ProxyServerIf {
   Cache cache;
   
   /* constructor */
-  ProxyServerHandler() {
-    cache = Cache(1 << 20);
-  }
+  ProxyServerHandler() : cache(1 << 20) { }
 
   /*  member functions */
   void getPage(sendData& _return, const std::string& url) {    
     webpage wp;
-    bool hit = cache.get(url, wp);
-    if(hit) {
+    bool hit = cache.get(url, wp); printf("%d\n", hit);
+    if(hit) { 
       _return.webcontent = std::string(wp.data, wp.len);
       _return.doesSucceed = true;
       cache.printCache();
@@ -86,13 +87,13 @@ class ProxyServerHandler : virtual public ProxyServerIf {
       bool doesSucceed = download_webpage(url, wp);
       if ( doesSucceed ){
 	_return.webcontent = std::string(wp.data, wp.len);
-	_return.doesSucceed = true;
-	cache.put(url, wp);
+	_return.doesSucceed = true; 
+	cache.put(url, wp); 
       }
       else {
 	_return.doesSucceed = false;
       }
-      free(wp.data);
+      //free(wp.data); // do not free here
       cache.printCache();
     }
   }
