@@ -13,4 +13,114 @@
 
 namespace RPC {
 
+
+sendData::~sendData() throw() {
+}
+
+
+void sendData::__set_doesSucceed(const bool val) {
+  this->doesSucceed = val;
+}
+
+void sendData::__set_webcontent(const std::string& val) {
+  this->webcontent = val;
+}
+
+const char* sendData::ascii_fingerprint = "1767FFB0CB3D9275BC64B198AB3B8A8B";
+const uint8_t sendData::binary_fingerprint[16] = {0x17,0x67,0xFF,0xB0,0xCB,0x3D,0x92,0x75,0xBC,0x64,0xB1,0x98,0xAB,0x3B,0x8A,0x8B};
+
+uint32_t sendData::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_BOOL) {
+          xfer += iprot->readBool(this->doesSucceed);
+          this->__isset.doesSucceed = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->webcontent);
+          this->__isset.webcontent = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t sendData::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  oprot->incrementRecursionDepth();
+  xfer += oprot->writeStructBegin("sendData");
+
+  xfer += oprot->writeFieldBegin("doesSucceed", ::apache::thrift::protocol::T_BOOL, 1);
+  xfer += oprot->writeBool(this->doesSucceed);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("webcontent", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeString(this->webcontent);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  oprot->decrementRecursionDepth();
+  return xfer;
+}
+
+void swap(sendData &a, sendData &b) {
+  using ::std::swap;
+  swap(a.doesSucceed, b.doesSucceed);
+  swap(a.webcontent, b.webcontent);
+  swap(a.__isset, b.__isset);
+}
+
+sendData::sendData(const sendData& other0) {
+  doesSucceed = other0.doesSucceed;
+  webcontent = other0.webcontent;
+  __isset = other0.__isset;
+}
+sendData& sendData::operator=(const sendData& other1) {
+  doesSucceed = other1.doesSucceed;
+  webcontent = other1.webcontent;
+  __isset = other1.__isset;
+  return *this;
+}
+std::ostream& operator<<(std::ostream& out, const sendData& obj) {
+  using apache::thrift::to_string;
+  out << "sendData(";
+  out << "doesSucceed=" << to_string(obj.doesSucceed);
+  out << ", " << "webcontent=" << to_string(obj.webcontent);
+  out << ")";
+  return out;
+}
+
 } // namespace

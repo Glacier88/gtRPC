@@ -35,8 +35,8 @@ uint32_t ProxyServer_getPage_args::read(::apache::thrift::protocol::TProtocol* i
     {
       case 1:
         if (ftype == ::apache::thrift::protocol::T_STRING) {
-          xfer += iprot->readString(this->addr);
-          this->__isset.addr = true;
+          xfer += iprot->readString(this->url);
+          this->__isset.url = true;
         } else {
           xfer += iprot->skip(ftype);
         }
@@ -58,8 +58,8 @@ uint32_t ProxyServer_getPage_args::write(::apache::thrift::protocol::TProtocol* 
   oprot->incrementRecursionDepth();
   xfer += oprot->writeStructBegin("ProxyServer_getPage_args");
 
-  xfer += oprot->writeFieldBegin("addr", ::apache::thrift::protocol::T_STRING, 1);
-  xfer += oprot->writeString(this->addr);
+  xfer += oprot->writeFieldBegin("url", ::apache::thrift::protocol::T_STRING, 1);
+  xfer += oprot->writeString(this->url);
   xfer += oprot->writeFieldEnd();
 
   xfer += oprot->writeFieldStop();
@@ -78,8 +78,8 @@ uint32_t ProxyServer_getPage_pargs::write(::apache::thrift::protocol::TProtocol*
   oprot->incrementRecursionDepth();
   xfer += oprot->writeStructBegin("ProxyServer_getPage_pargs");
 
-  xfer += oprot->writeFieldBegin("addr", ::apache::thrift::protocol::T_STRING, 1);
-  xfer += oprot->writeString((*(this->addr)));
+  xfer += oprot->writeFieldBegin("url", ::apache::thrift::protocol::T_STRING, 1);
+  xfer += oprot->writeString((*(this->url)));
   xfer += oprot->writeFieldEnd();
 
   xfer += oprot->writeFieldStop();
@@ -114,8 +114,8 @@ uint32_t ProxyServer_getPage_result::read(::apache::thrift::protocol::TProtocol*
     switch (fid)
     {
       case 0:
-        if (ftype == ::apache::thrift::protocol::T_STRING) {
-          xfer += iprot->readString(this->success);
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->success.read(iprot);
           this->__isset.success = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -140,8 +140,8 @@ uint32_t ProxyServer_getPage_result::write(::apache::thrift::protocol::TProtocol
   xfer += oprot->writeStructBegin("ProxyServer_getPage_result");
 
   if (this->__isset.success) {
-    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_STRING, 0);
-    xfer += oprot->writeString(this->success);
+    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_STRUCT, 0);
+    xfer += this->success.write(oprot);
     xfer += oprot->writeFieldEnd();
   }
   xfer += oprot->writeFieldStop();
@@ -175,8 +175,8 @@ uint32_t ProxyServer_getPage_presult::read(::apache::thrift::protocol::TProtocol
     switch (fid)
     {
       case 0:
-        if (ftype == ::apache::thrift::protocol::T_STRING) {
-          xfer += iprot->readString((*(this->success)));
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += (*(this->success)).read(iprot);
           this->__isset.success = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -194,19 +194,19 @@ uint32_t ProxyServer_getPage_presult::read(::apache::thrift::protocol::TProtocol
   return xfer;
 }
 
-void ProxyServerClient::getPage(std::string& _return, const std::string& addr)
+void ProxyServerClient::getPage(sendData& _return, const std::string& url)
 {
-  send_getPage(addr);
+  send_getPage(url);
   recv_getPage(_return);
 }
 
-void ProxyServerClient::send_getPage(const std::string& addr)
+void ProxyServerClient::send_getPage(const std::string& url)
 {
   int32_t cseqid = 0;
   oprot_->writeMessageBegin("getPage", ::apache::thrift::protocol::T_CALL, cseqid);
 
   ProxyServer_getPage_pargs args;
-  args.addr = &addr;
+  args.url = &url;
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -214,7 +214,7 @@ void ProxyServerClient::send_getPage(const std::string& addr)
   oprot_->getTransport()->flush();
 }
 
-void ProxyServerClient::recv_getPage(std::string& _return)
+void ProxyServerClient::recv_getPage(sendData& _return)
 {
 
   int32_t rseqid = 0;
@@ -294,7 +294,7 @@ void ProxyServerProcessor::process_getPage(int32_t seqid, ::apache::thrift::prot
 
   ProxyServer_getPage_result result;
   try {
-    iface_->getPage(result.success, args.addr);
+    iface_->getPage(result.success, args.url);
     result.__isset.success = true;
   } catch (const std::exception& e) {
     if (this->eventHandler_.get() != NULL) {

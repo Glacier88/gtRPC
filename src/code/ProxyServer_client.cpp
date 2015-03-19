@@ -4,7 +4,7 @@
 #include <thrift/protocol/TBinaryProtocol.h>
 
 #include <iostream>
-
+#include <cstdio>
 using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
@@ -20,12 +20,12 @@ int main(int argc, char **argv) {
   ProxyServerClient client(protocol);
   transport->open();
 
-  string url("http://www.google.com");
-  string page;
-  client.getPage(page, url);
+  string url("https://www.yahoo.com/");
+  sendData result;
+  client.getPage(result, url);
 
-  cout << page << endl;;
-
+  cout << result.webcontent << endl;;
+  fprintf(stderr, "%d\n", result.doesSucceed);
   transport->close();
 
   return 0;

@@ -19,6 +19,57 @@
 
 namespace RPC {
 
+class sendData;
+
+typedef struct _sendData__isset {
+  _sendData__isset() : doesSucceed(false), webcontent(false) {}
+  bool doesSucceed :1;
+  bool webcontent :1;
+} _sendData__isset;
+
+class sendData {
+ public:
+
+  static const char* ascii_fingerprint; // = "1767FFB0CB3D9275BC64B198AB3B8A8B";
+  static const uint8_t binary_fingerprint[16]; // = {0x17,0x67,0xFF,0xB0,0xCB,0x3D,0x92,0x75,0xBC,0x64,0xB1,0x98,0xAB,0x3B,0x8A,0x8B};
+
+  sendData(const sendData&);
+  sendData& operator=(const sendData&);
+  sendData() : doesSucceed(0), webcontent() {
+  }
+
+  virtual ~sendData() throw();
+  bool doesSucceed;
+  std::string webcontent;
+
+  _sendData__isset __isset;
+
+  void __set_doesSucceed(const bool val);
+
+  void __set_webcontent(const std::string& val);
+
+  bool operator == (const sendData & rhs) const
+  {
+    if (!(doesSucceed == rhs.doesSucceed))
+      return false;
+    if (!(webcontent == rhs.webcontent))
+      return false;
+    return true;
+  }
+  bool operator != (const sendData &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const sendData & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+  friend std::ostream& operator<<(std::ostream& out, const sendData& obj);
+};
+
+void swap(sendData &a, sendData &b);
+
 } // namespace
 
 #endif

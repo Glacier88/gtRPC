@@ -9,7 +9,7 @@ CLIENT=ProxyServer_client
 all: $(SERVER) $(CLIENT)
 
 %.o: %.cpp
-	$(CXX) -Wall -DHAVE_INTTYPES_H -DHAVE_NETINET_IN_H  -c $< -o $@
+	$(CXX) -Wall -std=c++11 -DHAVE_INTTYPES_H -DHAVE_NETINET_IN_H  -c $< -o $@
 
 $(SERVER): $(SERVER:=.o) $(GEN_OBJ)
 	$(CXX) $^ -o $@  -lthrift -lcurl

@@ -21,6 +21,9 @@ http://curl.haxx.se/libcurl/c/libcurl-tutorial.html
 a useful example  
 http://curl.haxx.se/libcurl/c/getinmemory.html
 
+* LRU Cache
+http://www.hawstein.com/posts/lru-cache-impl.html
+
 build thrift from source file (linux)
 ====================
 I compile and install in my desktop. It requires boost library to support C++.

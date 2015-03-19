@@ -15,7 +15,7 @@ namespace RPC {
 class ProxyServerIf {
  public:
   virtual ~ProxyServerIf() {}
-  virtual void getPage(std::string& _return, const std::string& addr) = 0;
+  virtual void getPage(sendData& _return, const std::string& url) = 0;
 };
 
 class ProxyServerIfFactory {
@@ -45,14 +45,14 @@ class ProxyServerIfSingletonFactory : virtual public ProxyServerIfFactory {
 class ProxyServerNull : virtual public ProxyServerIf {
  public:
   virtual ~ProxyServerNull() {}
-  void getPage(std::string& /* _return */, const std::string& /* addr */) {
+  void getPage(sendData& /* _return */, const std::string& /* url */) {
     return;
   }
 };
 
 typedef struct _ProxyServer_getPage_args__isset {
-  _ProxyServer_getPage_args__isset() : addr(false) {}
-  bool addr :1;
+  _ProxyServer_getPage_args__isset() : url(false) {}
+  bool url :1;
 } _ProxyServer_getPage_args__isset;
 
 class ProxyServer_getPage_args {
@@ -63,19 +63,19 @@ class ProxyServer_getPage_args {
 
   ProxyServer_getPage_args(const ProxyServer_getPage_args&);
   ProxyServer_getPage_args& operator=(const ProxyServer_getPage_args&);
-  ProxyServer_getPage_args() : addr() {
+  ProxyServer_getPage_args() : url() {
   }
 
   virtual ~ProxyServer_getPage_args() throw();
-  std::string addr;
+  std::string url;
 
   _ProxyServer_getPage_args__isset __isset;
 
-  void __set_addr(const std::string& val);
+  void __set_url(const std::string& val);
 
   bool operator == (const ProxyServer_getPage_args & rhs) const
   {
-    if (!(addr == rhs.addr))
+    if (!(url == rhs.url))
       return false;
     return true;
   }
@@ -100,7 +100,7 @@ class ProxyServer_getPage_pargs {
 
 
   virtual ~ProxyServer_getPage_pargs() throw();
-  const std::string* addr;
+  const std::string* url;
 
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
 
@@ -115,20 +115,20 @@ typedef struct _ProxyServer_getPage_result__isset {
 class ProxyServer_getPage_result {
  public:
 
-  static const char* ascii_fingerprint; // = "9A73381FEFD6B67F432E717102246330";
-  static const uint8_t binary_fingerprint[16]; // = {0x9A,0x73,0x38,0x1F,0xEF,0xD6,0xB6,0x7F,0x43,0x2E,0x71,0x71,0x02,0x24,0x63,0x30};
+  static const char* ascii_fingerprint; // = "C398A628D47A730227A6ADC2F08E5334";
+  static const uint8_t binary_fingerprint[16]; // = {0xC3,0x98,0xA6,0x28,0xD4,0x7A,0x73,0x02,0x27,0xA6,0xAD,0xC2,0xF0,0x8E,0x53,0x34};
 
   ProxyServer_getPage_result(const ProxyServer_getPage_result&);
   ProxyServer_getPage_result& operator=(const ProxyServer_getPage_result&);
-  ProxyServer_getPage_result() : success() {
+  ProxyServer_getPage_result() {
   }
 
   virtual ~ProxyServer_getPage_result() throw();
-  std::string success;
+  sendData success;
 
   _ProxyServer_getPage_result__isset __isset;
 
-  void __set_success(const std::string& val);
+  void __set_success(const sendData& val);
 
   bool operator == (const ProxyServer_getPage_result & rhs) const
   {
@@ -156,12 +156,12 @@ typedef struct _ProxyServer_getPage_presult__isset {
 class ProxyServer_getPage_presult {
  public:
 
-  static const char* ascii_fingerprint; // = "9A73381FEFD6B67F432E717102246330";
-  static const uint8_t binary_fingerprint[16]; // = {0x9A,0x73,0x38,0x1F,0xEF,0xD6,0xB6,0x7F,0x43,0x2E,0x71,0x71,0x02,0x24,0x63,0x30};
+  static const char* ascii_fingerprint; // = "C398A628D47A730227A6ADC2F08E5334";
+  static const uint8_t binary_fingerprint[16]; // = {0xC3,0x98,0xA6,0x28,0xD4,0x7A,0x73,0x02,0x27,0xA6,0xAD,0xC2,0xF0,0x8E,0x53,0x34};
 
 
   virtual ~ProxyServer_getPage_presult() throw();
-  std::string* success;
+  sendData* success;
 
   _ProxyServer_getPage_presult__isset __isset;
 
@@ -195,9 +195,9 @@ class ProxyServerClient : virtual public ProxyServerIf {
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> getOutputProtocol() {
     return poprot_;
   }
-  void getPage(std::string& _return, const std::string& addr);
-  void send_getPage(const std::string& addr);
-  void recv_getPage(std::string& _return);
+  void getPage(sendData& _return, const std::string& url);
+  void send_getPage(const std::string& url);
+  void recv_getPage(sendData& _return);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -246,13 +246,13 @@ class ProxyServerMultiface : virtual public ProxyServerIf {
     ifaces_.push_back(iface);
   }
  public:
-  void getPage(std::string& _return, const std::string& addr) {
+  void getPage(sendData& _return, const std::string& url) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->getPage(_return, addr);
+      ifaces_[i]->getPage(_return, url);
     }
-    ifaces_[i]->getPage(_return, addr);
+    ifaces_[i]->getPage(_return, url);
     return;
   }
 

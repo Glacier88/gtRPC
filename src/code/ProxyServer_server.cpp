@@ -6,8 +6,8 @@
 #include <thrift/server/TSimpleServer.h>
 #include <thrift/transport/TServerSocket.h>
 #include <thrift/transport/TBufferTransports.h>
-#include <string>
 #include <curl/curl.h>
+#include "cache.h"
 using namespace ::apache::thrift;
 using namespace ::apache::thrift::protocol;
 using namespace ::apache::thrift::transport;
@@ -20,92 +20,80 @@ using namespace  ::RPC;
 /////////////////////////////////////////////////////////////////////
 //       complementary structures,functions,classes                // 
 /////////////////////////////////////////////////////////////////////
-
-struct wd_in {
-  size_t size;
-  size_t len;
-  char *data;
-};
-
-size_t write_data(void *buffer, size_t size, 
-		  size_t nmemb, void *userp) {
-  struct wd_in *wdi = (struct wd_in *)userp;
-
-  while(wdi->len + (size * nmemb) >= wdi->size) {
-    /* check for realloc failing in real code. */
-    wdi->data = (char*)realloc(wdi->data, wdi->size*2);
-    wdi->size*=2;
+size_t write_data(void *buffer, size_t size, size_t nmemb, void *userp) {
+  webpage *wp_ptr = (webpage *)userp;
+  while(wp_ptr->len + (size * nmemb) >= wp_ptr->size) {
+    wp_ptr->data = (char*)realloc(wp_ptr->data, wp_ptr->size*2);
+    wp_ptr->size*=2;
   }
-
-  memcpy(wdi->data + wdi->len, buffer, size * nmemb);
-  wdi->len+=size*nmemb;
+  memcpy(wp_ptr->data + wp_ptr->len, buffer, size * nmemb);
+  wp_ptr->len+=size*nmemb;
 
   return size * nmemb;
 }
 
-//Cache entry Structure
-typedef struct {
-  std::string data;
-  int timeStamp;
-} cacheEntry;
-
-
+bool download_webpage(const std::string &url, webpage &wp){
+  CURL *curl;
+  CURLcode res;
+      
+  memset(&wp, 0, sizeof(wp));
+  curl = curl_easy_init();
+    
+  if(NULL != curl) {
+    wp.size = 1024;
+    wp.data = (char*)malloc(wp.size);
+    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &wp);
+    res = curl_easy_perform(curl);
+    
+    if(res != CURLE_OK){
+      fprintf(stderr, "curl_easy_perform() failed.\n");
+      return false;
+    }
+    
+    curl_easy_cleanup(curl);
+    return true;
+  }
+  else {
+    fprintf(stderr, "Error: could not get CURL handle.\n");
+    return false;
+  }
+}
 
 /////////////////////////////////////////////////////////////////////
 //                   Proxy Server Handler                          // 
 /////////////////////////////////////////////////////////////////////
 class ProxyServerHandler : virtual public ProxyServerIf {
  public:
+  Cache cache;
   
-  /* member variables */
-  std::unordered_map<std::string, cacheEntry> cacheHash;
-
   /* constructor */
   ProxyServerHandler() {
-    // Your initialization goes here
+    cache = Cache(1 << 20);
   }
 
   /*  member functions */
-  void getPage(std::string& _return, const std::string& url) {
-    
-    std::unordered_map<std::string, cacheEntry>::const_iterator
-      got = cacheHash.find (url);
-    
-    if ( got != mymap.end() ){ // found
-      cacheHit(cacheHash); // function to hand the case when cache hit
-      _return = (got -> second).data; 
-    }
-    else { // not found    
-      CURL *curl;
-      CURLcode res;
-      struct wd_in wdi;
-    
-      memset(&wdi, 0, sizeof(wdi));
-      curl = curl_easy_init();
-    
-      if(NULL != curl) {
-	wdi.size = 1024;
-	wdi.data = (char*)malloc(wdi.size);
-	curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
-	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &wdi);
-	res = curl_easy_perform(curl);
-
-	/* Check the return value. */
-	if(res != CURLE_OK) _return = std::string("error");
-	else {
-	  _return = std::string(wdi.data, wdi.len);
-	  cacheMiss(cacheHash); // handle the cache miss case
-	}
-      
-	curl_easy_cleanup(curl);
+  void getPage(sendData& _return, const std::string& url) {    
+    webpage wp;
+    bool hit = cache.get(url, wp);
+    if(hit) {
+      _return.webcontent = std::string(wp.data, wp.len);
+      _return.doesSucceed = true;
+      cache.printCache();
+    } 
+    else { // not found 
+      bool doesSucceed = download_webpage(url, wp);
+      if ( doesSucceed ){
+	_return.webcontent = std::string(wp.data, wp.len);
+	_return.doesSucceed = true;
+	cache.put(url, wp);
       }
       else {
-	fprintf(stderr, "Error: could not get CURL handle.\n");
-	exit(EXIT_FAILURE);
+	_return.doesSucceed = false;
       }
-
-      free(wdi.data);
+      free(wp.data);
+      cache.printCache();
     }
   }
 
