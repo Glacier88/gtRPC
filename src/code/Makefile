@@ -3,15 +3,18 @@ GEN_OBJ := $(patsubst %.cpp,%.o, $(GEN_SRC))
 
 SERVER=ProxyServer_server
 CLIENT=ProxyServer_client
+POLICY=lru.cpp
+
+CXXFLAGS = -std=c++11 -Wall
 
 .PHONY: all clean
 
 all: $(SERVER) $(CLIENT)
 
 %.o: %.cpp
-	$(CXX) -Wall -std=c++11 -DHAVE_INTTYPES_H -DHAVE_NETINET_IN_H  -c $< -o $@
+	$(CXX) $(CXXFLAGS) -DHAVE_INTTYPES_H -DHAVE_NETINET_IN_H  -c $< -o $@
 
-$(SERVER): $(SERVER:=.o) $(GEN_OBJ)
+$(SERVER): $(SERVER:=.o) $(GEN_OBJ) $(POLICY:.cpp=.o)
 	$(CXX) $^ -o $@  -lthrift -lcurl
 
 $(CLIENT): $(CLIENT:=.o) $(GEN_OBJ)

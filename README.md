@@ -1,12 +1,33 @@
 # gtRPC
 project 3 of GT course CS6210 ---- RPC-Based Proxy Server
 
+I may put the following words in the report.  
+
+#### structure of the code
+All code is contained in folder src  
+* proxy.thrift : use thrift to generate proxy frame work  
+* ProxyServer_client.cpp: the client code
+* ProxyServer_server.cpp: the server code
+* cache.h:  define the cache policy class
+* lru.cpp:  implement functions in cache.h to obtain LRU cache policy
+
+So we only to implement the Cache class defined in cache.h to get 
+different cache policies. 
+
 ##work flow
 
 ####Xiong Ding: 
 1. test the thrift "hello word" program
 2. write the proxy server/client program
-3. Next => write different cache policies
+3. write the cache LRU policy
+4. Next => write the report and wait Yuebin Zhou to finish his part
+
+####Yuebin Zhou
+1. write the other two policies
+2. write the measurement metrics (calculate performance)
+3. implement URL list for the client, implement different overload patterns.
+
+after all is done, we do the experiments and finish the report.
 
 ##Useful links
 
@@ -21,8 +42,8 @@ http://curl.haxx.se/libcurl/c/libcurl-tutorial.html
 a useful example  
 http://curl.haxx.se/libcurl/c/getinmemory.html
 
-* LRU Cache
-http://www.hawstein.com/posts/lru-cache-impl.html
+* LRU Cache   (I followed the following link to implement LRU)
+http://www.hawstein.com/posts/lru-cache-impl.html   
 
 build thrift from source file (linux)
 ====================
