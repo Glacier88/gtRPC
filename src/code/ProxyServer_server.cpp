@@ -64,6 +64,8 @@ bool download_webpage(const std::string &url, webpage &wp){
   }
 }
 
+int total_hit=0;
+
 /////////////////////////////////////////////////////////////////////
 //                   Proxy Server Handler                          // 
 /////////////////////////////////////////////////////////////////////
@@ -96,8 +98,8 @@ class ProxyServerHandler : virtual public ProxyServerIf {
       //free(wp.data); // do not free here
       cache.printCache();
     }
+    printf("total hit till now:%d\n",total_hit);
   }
-
 };
 
 int main(int argc, char **argv) {
