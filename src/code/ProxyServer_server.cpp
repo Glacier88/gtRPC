@@ -84,6 +84,7 @@ class ProxyServerHandler : virtual public ProxyServerIf {
       _return.webcontent = std::string(wp.data, wp.len);
       _return.doesSucceed = true;
       cache.printCache();
+      total_hit++;
     } 
     else { // not found 
       bool doesSucceed = download_webpage(url, wp);

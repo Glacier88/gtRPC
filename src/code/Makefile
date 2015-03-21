@@ -3,7 +3,7 @@ GEN_OBJ := $(patsubst %.cpp,%.o, $(GEN_SRC))
 
 SERVER=ProxyServer_server
 CLIENT=ProxyServer_client
-POLICY=lru.cpp
+POLICY=random.cpp
 
 CXXFLAGS = -std=c++11 -Wall
 

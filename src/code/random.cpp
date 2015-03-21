@@ -2,6 +2,9 @@
 #include <unordered_map>
 #include <iostream>
 #include <cstdio> 
+#include <vector>
+#include <iterator>
+
 
 bool Cache::get(const std::string &url,webpage &wp)
 {
@@ -20,23 +23,15 @@ void Cache::put(const std::string &url,webpage &wp)
 		srand(time(0));
 		int r=rand();
 		int rand=r%numEntry--;
-		Node *node=head;
-		int i=0;
-		for(i=0;i<=rand;i++)
-			node=node->next;
-		detach(node);
-		table.erase(node->url);
-		totalSize-=(node->wp).len;
-		if(node->prev!=NULL)
-		{
-			free((node->wp).data);
-			delete node;
-		}
+		totalSize-=(table.at(keys.at(rand))->wp).len;
+		table.erase(keys.at(rand));
+		keys.erase(keys.begin()+rand);
+		
 	}
 	Node *newNode=new Node;
 	newNode->url=url;
 	newNode->wp=wp;
-	table.emplace(url,newNode);
-	attach(newNode);
 	numEntry++;
+	keys.push_back(url);
+	table.emplace(url,newNode);
 }

@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <iostream>
 #include <cstdio>
+#include <vector>
 
 //const size_t MaxSize = 1 << 20; // 1M
 
@@ -23,6 +24,7 @@ typedef struct _Node {
 
 typedef std::unordered_map<std::string, Node*> hashTable;
 
+
 class Cache {
 
  private:
@@ -31,6 +33,7 @@ class Cache {
   size_t numEntry;		/* number of cache entries */
   hashTable table;		/* the hash table */
   Node *head, *tail;		/* head and tail of the linked list */
+  std::vector<std::string> keys;
   
   /* detach the node that is just before the tail */
   void detach(Node *node){
