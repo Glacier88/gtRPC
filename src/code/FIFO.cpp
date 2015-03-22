@@ -6,8 +6,10 @@
 bool Cache::get(const std::string &url,webpage &wp)
 {
 	hashTable::const_iterator iter=table.find(url);
-	if(iter!=table.end())
+	if(iter!=table.end()){
+	  wp = iter->second->wp;
 		return true;
+	}
 	else
 		return false;	
 }
