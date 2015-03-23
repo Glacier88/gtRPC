@@ -16,18 +16,10 @@ pages2=["http://www.google.com","http://www.cnn.com","http://www.yahoo.com","htt
 
 # random work load			
 with open("random_workload",'w') as file1:
-	for i in range(200):
+	for i in range(150):
 		file1.write(choice(pages)+"\n")
 #repeated work load
 with open("repeated_workload",'w') as file2:
-	for i in range(40):
-			file2.write(choice(pages2[0:30])+"\n");
-	for i in range(40):
-			file2.write(choice(pages2[30:60])+"\n");
-	for i in range(40):
-			file2.write(choice(pages2[60-90])+"\n");
-	for i in range(40):
-			file2.write(choice(pages2[20:50])+"\n");
-	for i in range(40):
-			file2.write(choice(pages2[50:80])+"\n");
+	for i in range(150):
+			file2.write(choice(pages2)+"\n");
 
