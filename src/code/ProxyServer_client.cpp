@@ -41,6 +41,7 @@ int main(int argc, char **argv) {
   ifstream inputfile(file);
   //test
   my_time_t total_time=0;
+  size_t numPages = 1;
   if(inputfile.is_open())
   {
      while(getline(inputfile,line))
@@ -53,7 +54,8 @@ int main(int argc, char **argv) {
                   my_time_t end=get_time();
                   total_time+=end-start;
 		  cout << result.webcontent << endl;;
-		  fprintf(stderr, "%d\n", result.doesSucceed);
+		  fprintf(stderr, "Succeed getting the %zd th webpage ? %d\n", 
+			  numPages++, result.doesSucceed);
 		  transport->close();
 	  }
   }
@@ -62,6 +64,6 @@ int main(int argc, char **argv) {
 	cout<<"Couldn`t open workload"<<endl;
 	return 1;
   }
-  fprintf(stderr, "Total time: %u\n", total_time);
+  fprintf(stderr, "Total time: %llu\n", total_time);
   return 0;
 }
