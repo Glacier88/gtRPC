@@ -116,11 +116,34 @@ to update the double linked cache list no matter whether it is a hit of
 miss.
 \end{itemize}
 
-
-
-
 \subsection{Random}
+Random policy evicts the cache entry randomly When the total cache 
+size excludes the maximal size. It can be implemented by a random
+number generator to choose the replace cache entry.
+\begin{itemize}
+\item \textbf{Pros:} It won't result in extremely bad performance.
+for some special
+ patterns, because the eviction decision is not based on the 
+access pattern; thus, it has similar performance for all kinds of patterns.
+\item \textbf{Cons:} It has higher rates compared with other cache 
+policies which take account of access pattern like LRU, because users
+are likely to browse a few web pages repeatedly.
+\end{itemize}
+
 \subsection{FIFO}
+The ``first in first out'' policy will evicts the entry that was put 
+into the cache earliest. Cache entries are always inserted at the tail
+of the cache container, and evicted from the head of the cache container.
+\begin{itemize}
+\item \textbf{Pros:} Usually, the oldest entry in the cache is least
+likely to be accessed again. FIFO reflects the ``age'' of each cache entry, 
+and evicts the oldest page, so it has relatively good performance compared
+to random policy.
+\item \textbf{Cons:} In some cases, the oldest cache may be accessed again,
+such as browsing a few web pages in a circular manner, so there is a large 
+number of cache misses. 
+\end{itemize}
+
 \section{Evaluation Metrics}
 
 \section{Workloads Generation}
