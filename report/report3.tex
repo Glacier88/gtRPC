@@ -52,7 +52,7 @@
 \author{Group member : \\
 \\
  Xiong Ding 902934749 \\ 
- Yubin Zhou
+ Yuebin Zhou 903005133
 } % Your name
 
 \date{\normalsize\today} % Today's date or a custom date
@@ -70,31 +70,31 @@
 \section{Cache Design}
 
 Cache is implemented by the combination of \textbf{Hash table} 
-and \textbf{double linked list}. Each hash entry is 
+and \textbf{doubly linked list}. Each hash entry is 
 a tuple \textbf{<URL, node*>}, where the node pointer points to a node
-in the double linked list (cache list). Each node is a structure
+in the doubly linked list (cache list). Each node is a structure
 containing the URL and the corresponding web page content.
 
 \vspace{0.5em}
 
 We use the C++ STL container \textbf{std::unordered\_map} to hold the 
 hash table. The searching operation in the unordered\_map
-has average complexity $O(1)$, and the worst case is $O(N)$. Double
+has an average complexity of $O(1)$, and the worst case is $O(N)$. Doubly
 linked list is used to hold the cached web pages. We insert new nodes
-at the head, and remove nodes at the tail. Different cache policy will
-implement different rules to manipulate this list, and insertion and
-deletion operation has complexity $O(1)$.
+to the head, and remove nodes from the tail. Different cache policies will
+implement different rules to manipulate this list, and insert and
+delete operations has complexity $O(1)$.
 
 \vspace{0.5em}
 
 The cache class can support two different operations: \textbf{get()} and
 \textbf{put()}. whenever there comes a URL, \textbf{get()} will try to look
 up the hash table, if the corresponding entry is found, then the web page
-content is returned 
-, and also \textbf{get()} may modify the node list to reflect recent access
+content would be returned. 
+\textbf{get()} may also modify the node list to reflect recent access
 (only for LRU policy). On the other hand, \textbf{put()} function is
-responsible for inserting new node to list and delete some nodes if the
-total size cached goes beyond the limits. Therefore, different cache 
+responsible for inserting new node to list and deleting nodes if the
+total size of cache goes beyond the limits. Therefore, different cache 
 policies only need to implement different \textbf{get()} and 
 \textbf{put()}, 
 such that the interface keeps uniform.
@@ -106,22 +106,22 @@ The Least Recent Used policy will keep track of the access order
 of cache list. In our implementation, the closer to the list head, 
 the fresher of the web page contained in this node. So every time 
 there is a cache hit, the corresponding cache node will be moved to
-the head, and if the cache is full, the nodes closest to the tail will
-first be removed.
+the head. If the cache is full, the nodes closest to the tail will
+be removed first.
 \begin{itemize}
 \item \textbf{Pros:} LRU can enhance locality. Recently visited websites
 are likely to be visited again.
 \item \textbf{Cons:} Performance issue: every lookup of the cache needs
-to update the double linked cache list no matter whether it is a hit of
+to update the double linked cache list no matter it is a hit or
 miss.
 \end{itemize}
 
 \subsection{Random}
 Random policy evicts the cache entry randomly When the total cache 
-size excludes the maximal size. It can be implemented by a random
+size exceeds the maximal size. It can be implemented by a random
 number generator to choose the replace cache entry.
 \begin{itemize}
-\item \textbf{Pros:} It won't result in extremely bad performance.
+\item \textbf{Pros:} It will not result in extremely bad performance.
 for some special
  patterns, because the eviction decision is not based on the 
 access pattern; thus, it has similar performance for all kinds of patterns.

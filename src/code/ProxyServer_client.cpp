@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
 	addr=argv[1];//not used yet
 	file=argv[2];
   }
-  boost::shared_ptr<TSocket> socket(new TSocket("localhost", 9090));
+  boost::shared_ptr<TSocket> socket(new TSocket(addr, 9090));
   boost::shared_ptr<TTransport> transport(new TBufferedTransport(socket));
   boost::shared_ptr<TProtocol> protocol(new TBinaryProtocol(transport));
 
