@@ -74,7 +74,7 @@ class ProxyServerHandler : virtual public ProxyServerIf {
   Cache cache;
   
   /* constructor */
-  ProxyServerHandler() : cache(1 << 19) { }//20->18
+  ProxyServerHandler() : cache(1 << 20) { }//20->18
 
   /*  member functions */
   void getPage(sendData& _return, const std::string& url) {    
