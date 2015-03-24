@@ -1,6 +1,6 @@
 from pylab import *
 
-case = 3
+case = 4
 
 if  case == 1: #  cache size 512k
     
@@ -241,5 +241,24 @@ if case == 3: # cache size 1M
     ax2.legend(loc='best')
     show()
 
- if case == 4:
+if case == 4:
+    Hlru1 = array([91, 110, 110, 110, 110])
+    x = arange(1, 6)
+    # plot miss rate
+    fig = figure(figsize=(6,4))
+    ax = fig.add_subplot(111)
+    lab1 = ['lru', 'FIFO', 'Random', 'no cache']
+    ax.plot(x, Hlru1 / double(110), 'r-.o', lw = 2, label = lab1[0] )
+    ax.plot(x, Hlru1 / double(110), 'y--o', lw =2, label = lab1[1] )
+    ax.set_xlabel(" the k th run")
+    ax.set_xticks(range(1,6))
+    ax.set_ylabel("Hit rate")
+    #ax.set_title('(a) repeated workload')
+    ax.set_ylim([0.8, 1.1])
+    ax.grid()
+    ax.legend(loc='best')
+    tight_layout()
+    ax2.legend(loc='best')
+    show()
+
      
