@@ -95,7 +95,7 @@ class Cache {
   void printCache(){
     printf("%zd %zd\n", totalSize, numEntry);
     for(auto& x: table)
-      std::cout << x.first << std::endl;
+      std::cout << x.first << ' ' << (x.second->wp).len << std::endl;
   }
 };
 

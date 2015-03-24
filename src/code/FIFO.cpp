@@ -16,6 +16,7 @@ bool Cache::get(const std::string &url,webpage &wp)
 
 void Cache::put(const std::string &url,webpage &wp)
 {
+	if(wp.len == 0) return; 
 	Node *newNode=new Node;
 	newNode->url=url;
 	newNode->wp=wp;
