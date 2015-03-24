@@ -19,7 +19,9 @@ bool Cache::get(const std::string &url,webpage &wp)
 }
 
 void Cache::put(const std::string &url,webpage &wp)
-{
+{	
+	if(wp.len == 0) return;
+  	if(wp.len > MaxSize) return; // in case numEntry is zero.
 	totalSize+=wp.len;
 	while(totalSize>MaxSize)
 	{
