@@ -43,7 +43,7 @@
 
 \title{	
 \normalfont \normalsize 
-\textsc{School of Physics, Georgia Institute of Technology } \\ [25pt] % Your university, school and/or department name(s)
+\textsc{Georgia Institute of Technology } \\ [25pt] % Your university, school and/or department name(s)
 \horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
 \huge RPC-Based Proxy Server \\ % The assignment title
 \horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
@@ -66,6 +66,13 @@
 %----------------------------------------------------------------------------------------
 
 \section{Introduction}
+
+In this project, we build a Remote Procedure Call based proxy server. Remote procedure call is an IPC that could enable a program to execute on another computer through network. This could used to build a client-server model. Proxy server is a model that the server is acting like the proxy of clients. Server will take the URLs sent by clients and then go to fetch those pages. When getting those pages, the server will send back those pages to clients. Caching is a necessary part for a server. It could help to increase the page loading speed as well as decreasing the transmit load. There are all kinds of caching policies which caters for different use patterns. In this project, we build three different caches: Random Cache, First-In-First-Out Cache(FIFO) and Least Recently Used Cache(LRU). We measured these three caches plus case with no cache with respect to hit rate and elapsed time. The result shows the different performance of different caching policies and of course the advantage of caching over no-caching. 
+
+
+To ease the development of this project, we utilized two software libraries. Apache Thrift was utilized to build the RPC based server. Apache Thrift is a software that could generate code framework to build cross-language services. Libcurl is another one that we used. It is a powerful library for server communication. It supports HTTP GET/PUT/POST functions. Proxy server would use them to fetch and send pages.Client would use them to send URLs and receive document bodies of web pages. 
+
+
 
 \section{Cache Design}
 
@@ -146,9 +153,20 @@ number of cache misses.
 
 \section{Evaluation Metrics}
 
+In order to measure the performance of different cache policies, we come up with two metrics. The first one is hit rate, which is the percentage of cache hit among all web pages. More cache hits mean more web caches could be cached. This would lead to a better performance. Therefore, the cache policy achieves the highest hit rate would be the one with the best performance in that case. Besides hit rate, total time of accessing the list of workload is also recorded. The sooner the time, the better the performance is. One thing to note is that the time should be compared relatively since the network situation is always changing. These two metrics are related to each other. A higher hit rate will save the time on fetching and caching the web pages. This could help to decrease the elapsed time. The trend is even more significant when the network is not good. 
+
 \section{Workloads Generation}
 
+We used two workloads in this experiment. It is a list of 110 URLS generated from a list 20 different websites. One is a random workload. It is generated using random elements in our website list. This is simulating a common scenario in which users do not show any obvious patterns in visiting websites. Random cache could also be used as a baseline to evaluate all kinds of caches since it is not biased at all. Another workload we used is repeated workload which is designed for FIFO and LRU cache. This workload is a repeated iteration of the website list with three websites inserted in this list every two, three and four URLs. This is simulating users continuously visiting those frequently visited page in certain order. For example, a GT student may first use google to find T-square and then visit google doc and google scholar to start to work on the report. This is a fixed workflow that always repeats. While in this process, one may frequently visit some websites. For example, that GT student may frequently visit google to search and facebook to have some fun while writing the report. This is the reason we insert some websites in to the workload.  
+    
+
 \section{Experiment Description}
+
+The experiment is conducted on two laptops of team members. The two computer are both running linux system and connected to GTWIFI network. Server program is running on one computer while the client is running on the other one. The client are fed with the host name of the proxy server so that they can build up a connection via socket. 
+
+There are two workloads and three different caching policies plus the no caching, so there are 8 combinations in total. Cache size is also an important factor worth of exploring. Therefore, for each caching policy we used 256K cache, 512K cache, 1M cache and 2M cache to observe the phenomena. For each combination and certain cache size, we let the client to perform a cache request on the workload for 5 times. In each time, we record the time that it takes to proxy the whole worklist and the total hit till now. We then use it to subtract with the previous hit to get the hit of this round. Time is obtained from system time. 
+
+We were expecting the LRU and FIFO could show a slightly better or even similar performance over random cache, since there are no patterns in this load. However, we expected the LRU and FIFO could be much better than random in repeated workload, because LRU and FIFO are more likely to keep those frequently or recently visited page cache whereas random cache destroys cache randomly. 
 
 \section{Experimental Results \& Analysis}
 \begin{figure}[h]
@@ -157,24 +175,29 @@ number of cache misses.
   \caption{cache size = 512k}
   \label{fig:time512k}
 \end{figure}
+Figure 7.1 shows the elapsed time of visiting two workloads with a cache size of 512K. We can see it takes longer time using no caching under both workloads. This matches our expectation. The other two caching policies are performing likewise. But LRU did show noticeably shorter time on repeated workload as we expected. Random cache were not doing bad in this case. We think this is because the cache size is relatively ample, so enough pages are cached to keep a good performance no matter what that caching policy is. 
 \begin{figure}[h]
   \centering
   \includegraphics[width=\textwidth]{../data/hit512k}
   \caption{cache size = 512k}
   \label{fig:hit512k}
 \end{figure}
+The figure 7.2 is showing hit rate in the same scenario which the cache size is 512K. The trend of hit rate matches with the that of time as we expected, which was that lower hit rate would lead to longer time and vice versa. Besides this, there are 3 more interest points here. The first one is although running time of random cache is not that slow whereas the hit rate of random load is significantly lower than the other two. The second one is LRU achieves the highest hit rate in repeated workload. Since this workload is highly repeated, our experiment verified that the LRU would do better in this kind of workloads. The last point is that FIFO was doing very good. FIFO will doing good in those cases which new URLs are keeping appearing while old URLs are less likely to appear again. We inspected the random workload and found there are several quite long subsequences like that.
 \begin{figure}[h]
   \centering
   \includegraphics[width=\textwidth]{../data/time256k}
   \caption{cache size = 256k}
   \label{fig:time256k}
 \end{figure}
+Figure 7.3 shows the elapsed time of different cache policies with a cache size of 256K. As the cache is decreased, those caching policies are no longer able to show significant performance advantages over no caching as that of 512K. In this case, we could not say any caching policy is doing significantly better than others. The relatively small cache size is the main factor shafting the performance no matter how good or bad the caching policies are. 
 \begin{figure}[h]
   \centering
   \includegraphics[width=\textwidth]{../data/hit256k}
   \caption{cache size = 256k}
   \label{fig:hit256k}
 \end{figure}
+Figure 7.4 shows the hit rate of cases where cache size=256k. We were surprised to find the random cache achieves the best performance in this case. For the relatively worse performance in the repeated workload. We think the small cache size is making the cache not able to cache enough number of cache to cover an entire repeating sequence of URLs. So when a repeated URL appear, it would have been removed from the cache, whereas it has a better chance to still live in the cache if random cache is used. For the random cache. We are guessing that if the cache size is small and your cache is intending to remove less recently or frequently appeared URLs, then 'wrong' URLs would be more likely to be removed in this small cache considering the workload does not contain many frequently or recently appeared URLs. Our conclusion is that random cache policy should be used when the cache size is limited.    
+
 \begin{figure}[h]
   \centering
   \includegraphics[width=\textwidth]{../data/time1M}
@@ -193,7 +216,7 @@ number of cache misses.
   \caption{cache size = 2M}
   \label{fig:time2M}
 \end{figure}
-
+We used 2M cache to try to reach a saturated situation. We can see from the figure that the hit rage is 1.0 after the tries. This is because the cache is big enough to hold all pages. From then on, all page transmitted are from the cache. 
 \section{Conclusion}
 
 
