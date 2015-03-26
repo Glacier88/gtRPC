@@ -67,10 +67,18 @@
 
 \section{Introduction}
 
-In this project, we build a Remote Procedure Call based proxy server. Remote procedure call is an IPC that could enable a program to execute on another computer through network. This could be used to build a client-server model. Proxy server is a model such that the server is acting like the proxy of clients. It will take the URLs sent by clients and then go to fetch those pages. While getting those pages, the server will simultaneously send back them to clients. In server client model, caching is a necessary part. It could help to increase the page loading performance as well as decreasing the transmit load. There are all kinds of caching policies which caters for different use patterns. In this project, we build three different caches: Random Cache, First-In-First-Out Cache(FIFO) and Least Recently Used Cache(LRU). We measured these three caches plus No Cache with respect to hit rate and elapsed time. The experiment shows different performances of different caching policies. Advantages and disadvantages of different caching policies are reflected in our experiments.
+In this project, we build a Remote Procedure Call based proxy server. Remote procedure call is an IPC that could enable a program to execute on another computer through network. This could be used to build a client-server model. Proxy server is a model that the server is acting like the proxy of clients. It will take the URLs sent by clients and then go to fetch those pages. While getting those pages, the server will simultaneously send back them to clients. 
 
+\vspace{1em}
 
-To ease the development of this project, we utilized two software libraries. Apache Thrift was leveraged to build the RPC based server. Apache Thrift is a software that could generate code framework to build cross-language services. Libcurl is another one that we used. It is a powerful library for server communication. It supports HTTP GET/PUT/POST functions. Proxy server would use them to fetch and send pages.Client would use them to send URLs and receive document bodies of web pages. 
+In server client model, caching is a necessary part. It could help to increase the page loading performance as well as decrease the transmit load. There are all kinds of caching policies which caters for different use patterns. In this project, we build three different caches: 
+\textbf{Random} Cache, \textbf{First-In-First-Out} Cache(FIFO) and
+\textbf{Least Recently Used} Cache(LRU). We measured these three caches plus \textbf{No Cache} with respect to hit rate and elapsed time. The experiment shows different performances of different caching policies. Advantages and disadvantages of different caching policies are reflected in our experiments.
+
+\vspace{0.5em}
+
+To ease the development of this project, we utilized two software libraries. \textbf{Apache Thrift} was leveraged to build the RPC based server. Apache Thrift is a software that could generate code framework to build cross-language services. 
+\textbf{Libcurl} is another one that we used. It is a powerful library for server communication. It supports HTTP GET/PUT/POST functions. Proxy server would use them to fetch and send pages. Client would use them to send URLs and receive document bodies of web pages. 
 
 
 
@@ -89,8 +97,8 @@ hash table. The searching operation in the unordered\_map
 has an average complexity of $O(1)$, and the worst case is $O(N)$. Doubly
 linked list is used to hold the cached web pages. We insert new nodes
 to the head, and remove nodes from the tail. Different cache policies will
-implement different rules to manipulate this list, and insert and
-delete operations has complexity $O(1)$.
+implement different rules to manipulate this list, and insertion and
+deletion operations has complexity $O(1)$.
 
 \vspace{0.5em}
 
@@ -101,7 +109,7 @@ content would be returned.
 \textbf{get()} may also modify the node list to reflect recent access
 (only for LRU policy). On the other hand, \textbf{put()} function is
 responsible for inserting new node to list and deleting nodes if the
-total size of cache goes beyond the limits. Therefore, different cache 
+total size of cache goes beyond the limit. Therefore, different cache 
 policies only need to implement different \textbf{get()} and 
 \textbf{put()}, 
 such that the interface keeps uniform.
@@ -128,36 +136,45 @@ Random policy evicts the cache entry randomly When the total cache
 size exceeds the maximal size. It can be implemented by a random
 number generator to choose the replace cache entry.
 \begin{itemize}
-\item \textbf{Pros:} It will not result in extremely bad performance.
-for some special
- patterns, because the eviction decision is not based on the 
+\item \textbf{Pros:} It will not result in extremely bad performance
+for some special 
+ patterns. Since the eviction decision is not based on the 
 access pattern; thus, it has similar performance for all kinds of patterns.
-\item \textbf{Cons:} It has higher rates compared with other cache 
+\item \textbf{Cons:} It has higher miss rate compared with other cache 
 policies which take account of access pattern like LRU, because users
 are likely to browse a few web pages repeatedly.
 \end{itemize}
 
 \subsection{FIFO}
 The ``first in first out'' policy will evicts the entry that was put 
-into the cache earliest. Cache entries are always inserted at the tail
-of the cache container, and evicted from the head of the cache container.
+into the cache earliest. Cache entries are always inserted at the head
+of the cache container, and evicted from the tail of the cache container.
 \begin{itemize}
 \item \textbf{Pros:} The hypothesis of FIFO is that the oldest entry in the cache is least
 likely to be accessed again. FIFO reflects the `age' of each cache entry, 
 and evicts the oldest page, so it has relatively better performance compared
 to random policy.
 \item \textbf{Cons:} In some cases, the oldest cache may be accessed again,
-such as browsing a few web pages in a circular manner, so there is a large 
+such as browsing a few web pages in a circular manner, which results in
+a large 
 number of cache misses. 
 \end{itemize}
 
 \section{Evaluation Metrics}
 
-In order to measure the performance of different cache policies, we come up with two metrics. The first one is hit rate, which is the percentage of cache hit among all web pages. More cache hits mean more web pages are cached. This would lead to a better performance. Therefore, the cache policy achieves the highest hit rate would be the one with the best performance in that case. Besides hit rate, total time of accessing the list of workload is also recorded. It is easy to see that the sooner the time, the better the performance. One thing to note is that the time should be compared relatively since the network situation is always changing. Also, these two metrics are related to each other. A higher hit rate will save the time on fetching and caching the web pages. This could help to decrease the elapsed time. The trend is more significant when the network is not good. 
+In order to measure the performance of different cache policies, we come up with two metrics. The first one is \textbf{hit rate}, which is the percentage of cache hit among all web pages acquires. 
+More cache hits mean that fewer web pages are needed to be fetched from original websites. This would lead to a better performance. Therefore, the cache policy achieves the highest hit rate would be the one with the best performance in that case. 
+
+\vspace{1em}
+
+Besides hit rate, \textbf{total time of accessing the list of workload}
+on the client side is also recorded. It is easy to see that the less the time, the better the performance. One thing to note is that the time should be compared relatively since the network situation is unstable.
+Also, these two metrics are related to each other. A higher hit rate will save the time on fetching and caching the web pages. This could help to decrease the elapsed time. The trend is more significant when the network is not good. 
 
 \section{Workloads Generation}
 
-We used two workloads in this experiment. They both are a list of 110 URLs generated from a list of 20 different website URLs. One is a random workload. It is generated randomly from the website list. This is simulating a common scenario which users do not show any obvious patterns in visiting websites. Random cache could also be used as a baseline to evaluate all kinds of caches since it is not biased. Another workload we used is repeated workload which is designed for FIFO and LRU cache. This workload is a repeated iteration of the website list with three websites inserted in this list every two, three and four URLs. This is simulating users continuously visiting those frequently visited page in certain order. For example, a GT student may first use google to find T-square and then visit google doc and google scholar to start to work on the report or homework. This is a fixed workflow that always repeats. While in this process, one may frequently visit some websites. For example, that student might frequently visit google to search or facebook to have some fun while studying. This is the reason we periodically insert some websites into the workload.  
+We used two workloads in this experiment. They both are a list of 110 URLs generated from a list of 20 different website URLs. One is a 
+\textbf{random workload}. It is generated randomly from the website list. This is simulating a common scenario which users do not show any obvious patterns in visiting websites. Random cache could also be used as a baseline to evaluate all kinds of caches since it is not biased. Another workload we used is repeated workload which is designed for FIFO and LRU cache. This workload is a repeated iteration of the website list with three websites inserted in this list every two, three and four URLs. This is simulating users continuously visiting those frequently visited page in certain order. For example, a GT student may first use google to find T-square and then visit google doc and google scholar to start to work on the report or homework. This is a fixed workflow that always repeats. While in this process, one may frequently visit some websites. For example, that student might frequently visit google to search or facebook to have some fun while studying. This is the reason we periodically insert some websites into the workload.  
     
 
 \section{Experiment Description}
