@@ -76,7 +76,7 @@ In server client model, caching is a necessary part. It could help to increase t
 \textbf{Random} Cache, \textbf{First-In-First-Out} Cache(FIFO) and
 \textbf{Least Recently Used} Cache(LRU). We measured these three caches plus \textbf{No Cache} with respect to hit rate and elapsed time. The experiment shows different performances of different caching policies. Advantages and disadvantages of different caching policies are reflected in our experiments.
 
-\vspace{0.5em}
+\vspace{1em}
 
 To ease the development of this project, we utilized two software libraries. \textbf{Apache Thrift} was leveraged to build the RPC based server. Apache Thrift is a software that could generate code framework to build cross-language services. 
 \textbf{Libcurl} is another one that we used. It is a powerful library for server communication. It supports HTTP GET/PUT/POST functions. Proxy server would use them to fetch and send pages. Client would use them to send URLs and receive document bodies of web pages. 
@@ -91,7 +91,7 @@ a tuple \textbf{<URL, node*>}, where the node pointer points to a node
 in the doubly linked list (cache list). Each node is a structure
 containing the URL and the corresponding web page content.
 
-\vspace{0.5em}
+\vspace{1em}
 
 We use the C++ STL container \textbf{std::unordered\_map} to hold the 
 hash table. The searching operation in the unordered\_map
@@ -101,7 +101,7 @@ to the head, and remove nodes from the tail. Different cache policies will
 implement different rules to manipulate this list, and insertion and
 deletion operations has complexity $O(1)$.
 
-\vspace{0.5em}
+\vspace{1em}
 
 The cache class can support two different operations: \textbf{get()} and
 \textbf{put()}. whenever there comes a URL, \textbf{get()} will try to look
@@ -177,7 +177,7 @@ Also, these two metrics are related to each other. A higher hit rate will save t
 We used two workloads in this experiment. They both are a list of 110 URLs generated from a list of 20 different website URLs. One is a 
 \textbf{random workload}. It is generated randomly from the website list. This is simulating a common scenario which users do not show any obvious patterns in visiting websites. Random cache could also be used as a baseline to evaluate all kinds of caches since it is not biased. 
 
-\vspace{0.5em}
+\vspace{1em}
 \begin{figure}[h]
   \centering
   \begin{align*}
@@ -211,16 +211,16 @@ Another workload we used is \textbf{repeated workload} which is designed for FIF
 
 The experiment is conducted on two laptops of team members. The two computers are both running linux system and connected to GTWIFI network. Server program is running on one computer while the client is running on the other one. The client is fed with the host name of the proxy server so that they can build up a connection via socket. 
 
-\vspace{0.5em}
+\vspace{1em}
 
 There are two workloads and three different caching policies plus the no caching, so there are 8 combinations in total. Cache size is also an important factor worth of exploring. Therefore, for each caching policy we used 256K cache, 512K cache, 1M cache and 2M cache to observe its 
 performance. For each combination and certain cache size, we let the client to perform a request according to the workload for 5 times. In each time, we record the time that it takes to proxy the whole worklist and the total hit. We then use the hit number to subtract the previous hit to get the hit of this round. Time is obtained from system time. 
 
-\vspace{0.5em}
+\vspace{1em}
 
 We were expecting the LRU and FIFO could show a slightly better or at least similar performance over random cache on random workload, since there are no patterns in this load. However, we expected the LRU and FIFO could be much better than random in repeated workload, because LRU and FIFO are more likely to keep those frequently or recently visited page cache whereas random cache destroys cache items randomly. 
 
-\vspace{0.5em}
+\vspace{1em}
 
 One thing \textbf{worth to mention} is that we found some websites do not support curl. A web document whose size is zero would be returned if we request it using curl. This will affect our cache performance evaluation. Our solution is to check the size of obtained pages and refuse to cache it if the size is zero. 
 
@@ -241,12 +241,12 @@ One thing \textbf{worth to mention} is that we found some websites do not suppor
 
 Figure~\ref{fig:time256k} shows the elapsed time of different cache policies with a cache size of 256K. As the cache is small, no caching policies are able to show significant performance advantages over no caching. In this case, we could not say any caching policy is doing significantly better than others. The relatively small cache size is the main factor shafting the performance, i.e: no matter how good or bad the caching policies are, good performance cannot be achieved.
 
-\vspace{0.5em}
+\vspace{1em}
 
 Figure~\ref{fig:hit256k} shows the hit rate of cases where cache size=256k. We were surprised to find the random cache achieves the best performance in this case. Regarding the relatively worse performance of FIFO and LRU in the repeated workload. Recall that, in this case, the number of cached 
 entries ranges from 2 to 4, thus, we conclude that the cache is not able to cache enough number of pages to cover an entire repeating sequence of URLs. So when a repeated URL appears, it would have been removed from the cache, whereas it has a better chance to still live in the random cache. For the random cache. We are thinking that if the cache size is small and the cache is intending to remove less recently or frequently appeared URLs, then 'wrong' URLs would be more likely to be removed considering the workload does not contain many frequently or recently appeared URLs. Our conclusion is that random cache policy should be used when the cache size is limited.    
 
-\vspace{0.5em}
+\vspace{1em}
 
 \begin{figure}[h]
   \centering
@@ -262,7 +262,7 @@ entries ranges from 2 to 4, thus, we conclude that the cache is not able to cach
 \end{figure}
 Figure~\ref{fig:time512k} shows the elapsed time of visiting two workloads with a cache size of 512K. We can see it takes longer time using no caching under both workloads. This matches our expectation. The other two caching policies are performing likewisely. But LRU does show noticeably shorter time on repeated workload as we expected. Random cache was not doing bad in this case. We think this is because the cache size is just ample, so enough pages might have been cached to keep a good performance no matter what the caching policy is. 
 
-\vspace{0.5em}
+\vspace{1em}
 
 The figure~\ref{fig:hit512k} is showing the hit rate in the same scenario which the cache size is 512K. The varying trend of hit rate matches with that of time, which was lower hit rate would lead to longer time and vice versa. Besides this, there are 3 more interest points here. The 
 \textbf{first} one is that although running time of random cache is not that slow, the hit rate of random load is significantly lower than the other two. This is what we were expecting. 
@@ -289,11 +289,11 @@ The \textbf{last} point is that FIFO was doing very good. FIFO is suppose to do 
 \end{figure}
 Figure~\ref{fig:time1M} shows the time of cases where cache size =1M. Again, cases with no cache are slower than those with caches. We think the advantage of server with cache over that with no cache will be becoming more and more significant along with the augmenting of cache size. In terms of the three caching policies, their running time are converging after we ran them for several rounds. We are guessing this is because 1M size is big enough to full play the power of all kinds of caching policies.
 
-\vspace{0.5em}
+\vspace{1em}
 
 Figure~\ref{fig:hit1M} shows the hit rate in the previous scenario. The perfect result appears in the repeated load. LRU achieves the best performance while FIFO follows. The random cache is significantly less effective than the other two. This matches our hypothesis very well. We think that cache size is an essential factor in affecting the caching performance. A cache policy could only fully show its power with an appropriate cache size. For random workload, the three cache policy has a similar hit rate. This also matches our expectation. This random workload does not cater for any cache policy, so they neither deteriorate nor improve the hit rate. 
 
-\vspace{0.5em}
+\vspace{1em}
 
 Finally, we tried 2M cache to reach a saturated situation. 
 As shown in figure~\ref{fig:hit2M}, the hit rate is 1.0 after two rounds. It means the cache has held all pages. From then on, all page transmitted are from the cache. 
